@@ -19,15 +19,15 @@ import java.util.List;
 @AllArgsConstructor
 //3. make class an entity
 @Entity
-@Table(name="_user")
+@Table(name = "STUDENTS")
 //4. Implement UserDetails interface
 public class User implements UserDetails {
     //1. Create fields
     @Id
     @GeneratedValue
     private Integer id;
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     private String email;
     private  String password;
 

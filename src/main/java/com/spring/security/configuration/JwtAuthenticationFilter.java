@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 //10. Implemnting the FilterChain
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -28,21 +30,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+            @NonNull FilterChain filterChain
+    ) {
 
         //11. Implementing check for jwt token
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authenticationHeader = request.getHeader("Authorization");
         final String jwtToken;
         final String userEmail;
 
        //12.
-        if(authorizationHeader == null ||! authorizationHeader.startsWith("Bearer ")){
-            filterChain.doFilter(request, response);
+        if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer ")) {
+            try {
+                filterChain.doFilter(request, response);
+            } catch (IOException e) {
+                System.out.println("In Catch:  IOException");
+                e.printStackTrace();
+            } catch (ServletException e) {
+                System.out.println("In Catch:  ServletException");
+                e.printStackTrace();
+            }
+
             return;
         }
         //13.
-        jwtToken = authorizationHeader.substring(7);
+        jwtToken = authenticationHeader.substring(7);
         userEmail = jwtService.extractUsername(jwtToken);//todo extract the userEmail from the JWT token;
         //23.
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -56,6 +67,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } catch (IOException e) {
+            System.out.println("In Catch:  IOException");
+            e.printStackTrace();
+        } catch (ServletException e) {
+            System.out.println("In Catch:  ServletException");
+            e.printStackTrace();
+        }
     }
 }
