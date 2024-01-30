@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.function.Function;
 
 //15
 @Service
@@ -16,9 +17,16 @@ public class JwtService {
 
     public String extractUsername(String jwtToken) {
 
-        return null;
+        //19.
+        return extractClaim(jwtToken, Claims::getSubject);
     }
-    //16. CReating claims
+    //18. Method to extract a single claim passed:
+    public <T> T extractClaim(String jwtToken, Function<Claims, T> claimResolver){
+        final Claims claims = extractAllClaims(jwtToken);
+        return claimResolver.apply(claims);
+    }
+
+    //16. Creating claims
     private Claims extractAllClaims(String jwtToken){
         return Jwts
                 .parserBuilder()
