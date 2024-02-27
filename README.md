@@ -14,4 +14,6 @@ This project entails implementation of Spring Security and JSON Web Token (JWT) 
 - JSON Web Tokens (JWT)
 
 ## Project Architecture
+![Untitled Diagram drawio](https://github.com/Deniskinyua/Spring-Security/assets/99446511/269aabe8-f3a1-48f3-81ea-c7dc43a276f1)
+
 
